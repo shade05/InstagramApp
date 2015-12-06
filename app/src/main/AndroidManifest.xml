@@ -19,6 +19,13 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
+        <activity
+            android:name="com.codepath.courses.instagramapp.VideoPlayerActivity"
+            android:configChanges="orientation|screenSize"
+            android:label="@string/title_activity_video_player"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
+        </activity>
     </application>
 
 </manifest>

@@ -14,4 +14,5 @@
     <string name="view_all_comments_default_text">view all comments</string>
     <string name="title_activity_comments">CommentsActivity</string>
     <string name="comments_caption">Comments</string>
+    <string name="title_activity_video_player">Video Title</string>
 </resources>

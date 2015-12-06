@@ -17,6 +17,8 @@ public class InstagramPhoto {
     public int imageHeight;
     public int likesCount;
     public int commentsCount;
+    public String videoUrl;
+    public int videoHeight;
 
     public String getRelativeTime() {
         return "";

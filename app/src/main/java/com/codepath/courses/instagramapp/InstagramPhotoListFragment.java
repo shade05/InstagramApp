@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.codepath.courses.instagramapp.beans.InstagramPhoto;
 import com.codepath.courses.instagramapp.di.AppController;
@@ -27,6 +28,8 @@ import java.util.Random;
 import javax.inject.Inject;
 
 public class InstagramPhotoListFragment extends Fragment {
+
+    private static String TAG = "InstagramPhotoListFragment";
 
     @Inject
     InstagramService mInstagramService;
@@ -42,6 +45,18 @@ public class InstagramPhotoListFragment extends Fragment {
         mRecyclerView = (RecyclerView) inflater.inflate(
                 R.layout.fragment_instagram_photo_list, container, false);
         setupRecyclerView(mRecyclerView);
+        mRecyclerView.addOnItemTouchListener(
+                new RecyclerItemClickListener(getContext(), new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        if (mInstagramPhotos.get(position).videoUrl != null && !mInstagramPhotos.get(position).videoUrl.equals("")) {
+                            getActivity().startActivity(VideoPlayerActivity.getIntent(getContext(), mInstagramPhotos.get(position).videoUrl));
+                        } else {
+                            Toast.makeText(getContext(), "not a video", Toast.LENGTH_LONG);
+                        }
+                    }
+                })
+        );
         new AsyncHttpTask().execute();
         return mRecyclerView;
     }
@@ -67,12 +82,14 @@ public class InstagramPhotoListFragment extends Fragment {
         private List<InstagramPhoto> mInstagramPhotos;
         private Context mContext;
 
+
         public InstagramPhotoRecyclerViewAdapter(Context context, List<InstagramPhoto> instagramPhotos) {
             context.getTheme().resolveAttribute(R.attr.selectableItemBackground, mTypedValue, true);
             mBackground = mTypedValue.resourceId;
             mInstagramPhotos = instagramPhotos;
             mContext = context;
         }
+
 
         public InstagramPhoto getValueAt(int position) {
             return mInstagramPhotos.get(position);
@@ -104,6 +121,14 @@ public class InstagramPhotoListFragment extends Fragment {
             Log.d("onBindViewHolder", "Image url " + viewHolder.mInstagramPhoto.imageUrl);
             Picasso.with(mContext).load(viewHolder.mInstagramPhoto.profileUrl).into(viewHolder.mProfileImageView);
             Picasso.with(mContext).load(viewHolder.mInstagramPhoto.imageUrl).placeholder(R.mipmap.ic_launcher).into(viewHolder.mImagePhotoImageView);
+            if (viewHolder.mInstagramPhoto.videoUrl != null && !viewHolder.mInstagramPhoto.videoUrl.equals("")) {
+                viewHolder.mImagePhotoImageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(final View view) {
+
+                    }
+                });
+            }
         }
 
         @Override
@@ -134,9 +159,11 @@ public class InstagramPhotoListFragment extends Fragment {
                 mTVLikesTextView = (TextView) view.findViewById(R.id.tvLikes);
                 mTVComment1TextView = (TextView) view.findViewById(R.id.tvComment1);
                 mTVComment2TextView = (TextView) view.findViewById(R.id.tvComment2);
+
             }
         }
     }
+
 
     public class AsyncHttpTask extends AsyncTask<String, Void, Integer> {
 
@@ -153,7 +180,10 @@ public class InstagramPhotoListFragment extends Fragment {
 
         @Override
         protected void onPostExecute(Integer result) {
-            mRecyclerView.setAdapter(new InstagramPhotoRecyclerViewAdapter(InstagramPhotoListFragment.this.getActivity(), mInstagramPhotos));
+            final InstagramPhotoRecyclerViewAdapter instagramPhotoRecyclerViewAdapter = new InstagramPhotoRecyclerViewAdapter(InstagramPhotoListFragment.this.getActivity(), mInstagramPhotos);
+            mRecyclerView.setAdapter(instagramPhotoRecyclerViewAdapter);
+
         }
     }
 }
+

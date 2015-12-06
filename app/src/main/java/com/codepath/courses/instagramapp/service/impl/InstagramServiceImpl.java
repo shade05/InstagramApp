@@ -51,7 +51,10 @@ public class InstagramServiceImpl implements InstagramService {
                 photo.imageUrl = photoJSON.getAsJsonObject("images").getAsJsonObject("standard_resolution").get("url").getAsString();
                 photo.imageHeight = photoJSON.getAsJsonObject("images").getAsJsonObject("standard_resolution").get("height").getAsInt();
                 photo.likesCount = photoJSON.getAsJsonObject("likes").get("count").getAsInt();
-
+                if (photoJSON.getAsJsonObject("videos") != null) {
+                    photo.videoUrl = photoJSON.getAsJsonObject("videos").getAsJsonObject("standard_resolution").get("url").getAsString();
+                    photo.videoHeight = photoJSON.getAsJsonObject("videos").getAsJsonObject("standard_resolution").get("height").getAsInt();
+                }
 
                 if (photoJSON.has("comments") && photoJSON.get("comments") != null) {
                     photo.commentsCount = photoJSON.getAsJsonObject("comments").get("count").getAsInt();
